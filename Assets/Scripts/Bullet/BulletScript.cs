@@ -42,6 +42,14 @@ public class BulletScript : MonoBehaviour
         collider.enabled = false;
         rb.velocity = Vector2.zero;
         Destroy(gameObject,GetComponentInChildren<TrailRenderer>().time);
+
+        //Check if enemy layer to destroy it
+        if(collision.gameObject.layer == 12)
+        {
+            collision.gameObject.GetComponent<Enemy>().isAlive = false;
+            Destroy(collision.gameObject, GetComponentInChildren<TrailRenderer>().time);
+
+        }
     }
 
 

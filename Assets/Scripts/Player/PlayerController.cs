@@ -78,7 +78,9 @@ public class PlayerController : MonoBehaviour
     {
 
         GameObject newBullet = Instantiate(bulletPrefab, transform.position, new Quaternion());
-        newBullet.GetComponent<Rigidbody2D>().velocity = (aimPos- playerRb.position)* PlayerStats.Instance.bulletSpeed;
+        //newBullet.GetComponent<Rigidbody2D>().velocity = (aimPos- playerRb.position)* PlayerStats.Instance.bulletSpeed;
+
+        newBullet.GetComponent<BulletScript>().Shoot((aimPos - playerRb.position), PlayerStats.Instance.bulletSpeed);
     }
 
 

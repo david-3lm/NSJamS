@@ -14,6 +14,8 @@ public class PlayerStats : MonoBehaviour
     public float moveSpeed = 10f;//5-30;
     public float bulletDamage = 1f;
     public float bulletSpeed = 1f;
+    public float spawnFrec = 1f;
+    public int arriveTimeEnemy = 5;
 
 
     private void Awake()

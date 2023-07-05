@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
     InputAction shootAction;
 
     private Vector2 aimPos;
+
+    private AudioSource playerAudioSource;
     
     //Camera
     private Camera cam;
@@ -52,7 +54,7 @@ public class PlayerController : MonoBehaviour
 
         cam = Camera.main;
 
-        
+        playerAudioSource = GetComponent<AudioSource>();
 
     }
 
@@ -79,6 +81,7 @@ public class PlayerController : MonoBehaviour
 
         GameObject newBullet = Instantiate(bulletPrefab, transform.position, new Quaternion());
         //newBullet.GetComponent<Rigidbody2D>().velocity = (aimPos- playerRb.position)* PlayerStats.Instance.bulletSpeed;
+        playerAudioSource.Play();
 
         newBullet.GetComponent<BulletScript>().Shoot((aimPos - playerRb.position), PlayerStats.Instance.bulletSpeed);
     }
@@ -90,6 +93,27 @@ public class PlayerController : MonoBehaviour
         aimPos = r.GetPoint(1f);
         aimPrefab.transform.position = aimPos;
 
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.layer == 12)//Enemy Layer
+        {
+            playerAudioSource.enabled = false;
+            GameManager.Instance.EndGame();
+        }
+
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer == 14)
+        {
+            
+            GameManager.Instance.BuffCollected();
+            collision.gameObject.SetActive(false);
+            Destroy(collision.gameObject);
+        }
     }
 
 }

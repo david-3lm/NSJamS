@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.Mathematics;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,14 +13,22 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject enemyPrefab;
     [SerializeField] int poolSize = 32;
     List<GameObject> enemyPool;
+    [SerializeField] GameObject buffPrefab;
 
     float points;
+    [Header("Canvas")]
     [SerializeField] TextMeshProUGUI pointsTxt;
+    [SerializeField] TextMeshProUGUI pointsTxtEndGame;
+    [SerializeField] TextMeshProUGUI buffsTxt;
+    [SerializeField] GameObject gameOverUI;
 
 
     public bool isPlaying;
     [Header("Spawns")]
     [SerializeField] public List<Transform> spawnPoints;
+
+
+    private Buff[] buffs;
 
     private void Awake()
     {
@@ -35,6 +44,14 @@ public class GameManager : MonoBehaviour
         #endregion
 
         enemyPool= new List<GameObject>();
+
+        buffs = new Buff[] {
+            new EnemySpeed(),
+            new PlayerSpeed(),
+            new BulletSpeed()
+        };
+
+        gameOverUI.SetActive(false);
     }
 
     private void Start()
@@ -48,9 +65,12 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        PlayerStats.Instance.spawnFrec -= Time.deltaTime/100;
-        points += Time.deltaTime;
-        pointsTxt.text = Mathf.FloorToInt(points).ToString();
+        if (isPlaying)
+        {
+            PlayerStats.Instance.spawnFrec -= Time.deltaTime / 100;
+            points += Time.deltaTime;
+            pointsTxt.text = Mathf.FloorToInt(points).ToString();
+        }
     }
 
     private void InitializeEnemyPool(int poolSize)
@@ -93,4 +113,37 @@ public class GameManager : MonoBehaviour
         }
         yield return null;
     }
+
+    public void SpawnBuff(Transform t)
+    {
+        Instantiate(buffPrefab,t.position,Quaternion.identity);
+    }
+    public void BuffCollected()
+    {
+        int r = UnityEngine.Random.Range(0, buffs.Length);
+        buffs[r].Effect();
+        StartCoroutine(ShowDescription(buffs[r].Description()));
+    }
+
+    IEnumerator ShowDescription(string description)
+    {
+        buffsTxt.text = description;
+        yield return new WaitForSeconds(2f);
+        buffsTxt.text = " ";
+
+
+    }
+    public void EndGame()
+    {
+        isPlaying = false;
+        pointsTxt.gameObject.SetActive(false);
+        pointsTxtEndGame.text = "You got: "+ Mathf.FloorToInt(points).ToString() + " points";
+        gameOverUI.SetActive(true);
+        Time.timeScale = 0f;
+    }
+
+    public void ChangeToScene(int i)
+    {
+        SceneManager.LoadSceneAsync(i);
+    } 
 }

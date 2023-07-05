@@ -11,7 +11,7 @@ public class PlayerStats : MonoBehaviour
 
 
     public float gameSpeed = 1f;
-    public float moveSpeed = 10f;//5-30;
+    public float moveSpeed = 15f;//5-30;
     public float bulletDamage = 1f;
     public float bulletSpeed = 1f;
     public float spawnFrec = 1f;
@@ -28,6 +28,15 @@ public class PlayerStats : MonoBehaviour
         {
             Destroy(this);
         }
+    }
+
+    private void Update()
+    {
+        Mathf.Clamp(gameSpeed, 0.5f, 3);
+        Mathf.Clamp(moveSpeed, 5f, 30);
+        Mathf.Clamp(bulletSpeed, 0.5f, 3);
+        Mathf.Clamp(spawnFrec, 0.1f, 3);
+        Mathf.Clamp(arriveTimeEnemy, 2f, 5);
     }
 
 

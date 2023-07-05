@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        Time.timeScale = 1f;
         #region Singleton
         if (Instance == null)
         {
